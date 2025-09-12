@@ -10,52 +10,45 @@ public class RuleEngine {
         if(board instanceof TicTacToeBoard) {
             TicTacToeBoard board1 = (TicTacToeBoard) board;
             String firstCharacter="-";
-            boolean rowComplete = true;
+            boolean someoneIsVictorious = true;
             for(int i = 0; i < 3; i++) {
-                firstCharacter = board1.getCell(i, 0);
-                rowComplete = firstCharacter != null;
+                firstCharacter = board1.getSymbol(i, 0);
+                someoneIsVictorious = firstCharacter != null;
                 if(firstCharacter != null) {
                     for (int j = 1; j < 3; j++) {
-                        if (!firstCharacter.equals(board1.getCell(i, j))) {
-                            rowComplete = false;
+                        if (!firstCharacter.equals(board1.getSymbol(i, j))) {
+                            someoneIsVictorious = false;
                             break;
                         }
                     }
                 }
-                if(rowComplete) {
-                    break;
+                if(someoneIsVictorious) {
+                    return new GameState(true, firstCharacter);
                 }
             }
-            if(rowComplete) {
-                return new GameState(true, firstCharacter);
-            }
 
 
-            boolean colComplete = true;
+            someoneIsVictorious = true;
             for(int i = 0; i < 3; i++) {
-                firstCharacter = board1.getCell(0, i);
-                colComplete = firstCharacter != null;
+                firstCharacter = board1.getSymbol(0, i);
+                someoneIsVictorious = firstCharacter != null;
                 if (firstCharacter != null){
                     for (int j = 1; j < 3; j++) {
-                        if (!firstCharacter.equals(board1.getCell(j, i))) {
-                            colComplete = false;
+                        if (!firstCharacter.equals(board1.getSymbol(j, i))) {
+                            someoneIsVictorious = false;
                             break;
                         }
                     }
                 }
-                if(colComplete) {
-                    break;
+                if(someoneIsVictorious) {
+                    return new GameState(true, firstCharacter);
                 }
             }
 
-            if(colComplete) {
-                return new GameState(true, firstCharacter);
-            }
-
-            firstCharacter = board1.getCell(0, 0);
+            firstCharacter = board1.getSymbol(0, 0);
             boolean diagComplete = firstCharacter != null;
             for(int i = 0; i < 3; i++) {
-                if(firstCharacter != null && !firstCharacter.equals(board1.getCell(i, i))) {
+                if(firstCharacter != null && !firstCharacter.equals(board1.getSymbol(i, i))) {
                     diagComplete = false;
                     break;
                 }
@@ -65,10 +58,10 @@ public class RuleEngine {
                 return new GameState(true, firstCharacter);
             }
 
-            firstCharacter = board1.getCell(0, 2);
+            firstCharacter = board1.getSymbol(0, 2);
             boolean revDiagComplete = firstCharacter!=null;
             for(int i = 0; i < 3; i++) {
-                if(firstCharacter != null && !firstCharacter.equals(board1.getCell(i, 2 - i))) {
+                if(firstCharacter != null && !firstCharacter.equals(board1.getSymbol(i, 2 - i))) {
                     revDiagComplete = false;
                     break;
                 }
@@ -81,7 +74,7 @@ public class RuleEngine {
             int countOfFilledCells = 0;
             for(int i = 0; i < 3; i++) {
                 for(int j = 0; j < 3; j++) {
-                    if(board1.getCell(i, j) != null) {
+                    if(board1.getSymbol(i, j) != null) {
                         countOfFilledCells++;
                     }
                 }

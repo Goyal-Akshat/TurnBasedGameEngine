@@ -11,30 +11,30 @@ import org.junit.Test;
 
 public class GamePlayTest {
     GameEngine gameEngine;
-    AIEngine   aiEngine;
     RuleEngine ruleEngine;
 
     @Before
     public void setup(){
         gameEngine = new GameEngine();
-        aiEngine   = new AIEngine();
         ruleEngine = new RuleEngine();
     }
 
-    public void playGame(int[][]moves, Board board) {
+    public void playGame(Board board,int[][]firstPlayerMoves,int[][] secondPlayerMoves ) {
         int row,col;
         int next=0;
         while(!ruleEngine.getState(board).isOver()) {
-            Player computer = new Player("O"),human = new Player("X");
-            row = moves[next][0];
-            col = moves[next][1];
-            next++;
-            Move oppMove = new Move(new Cell(row, col),human);
-            gameEngine.move(board, oppMove);
+            Player first = new Player("X"),second = new Player("O");
+            row = firstPlayerMoves[next][0];
+            col = firstPlayerMoves[next][1];
+            Move firstPlayerMove = new Move(new Cell(row, col),first);
+            gameEngine.move(board, firstPlayerMove);
             if(!ruleEngine.getState(board).isOver()) {
-                Move computerMove = aiEngine.suggestMove(computer, board);
-                gameEngine.move(board, computerMove);
+                int sRow = secondPlayerMoves[next][0];
+                int sCol = secondPlayerMoves[next][1];
+                Move secondPlayerMove = new Move(new Cell(sRow, sCol),second);
+                gameEngine.move(board, secondPlayerMove);
             }
+            next++;
         }
     }
 
@@ -42,7 +42,8 @@ public class GamePlayTest {
     public void checkForRowWin(){
         Board board = gameEngine.start("TicTacToe");
         int[][] moves = new int[][]{{1,0},{1,1},{1,2}};
-        playGame(moves,board);
+        int[][] secondPlayerMoves = new int[][]{{0,0},{0,1},{0,2}};
+        playGame(board,moves,secondPlayerMoves);
         Assert.assertTrue(ruleEngine.getState(board).isOver());
         Assert.assertTrue(ruleEngine.getState(board).getWinner().equals("X"));
     }
@@ -50,8 +51,9 @@ public class GamePlayTest {
     @Test
     public void checkForColumnWin(){
         Board board = gameEngine.start("TicTacToe");
-        int[][] moves = new int[][]{{0,0},{0,1},{0,2}};
-        playGame(moves,board);
+        int[][] moves = new int[][]{{0,0},{1,0},{2,0}};
+        int[][] secondPlayerMoves = new int[][]{{0,1},{0,2},{1,1}};
+        playGame(board,moves,secondPlayerMoves);
         Assert.assertTrue(ruleEngine.getState(board).isOver());
         Assert.assertTrue(ruleEngine.getState(board).getWinner().equals("X"));
     }
@@ -60,7 +62,8 @@ public class GamePlayTest {
     public void checkForDiagWin(){
         Board board = gameEngine.start("TicTacToe");
         int[][] moves = new int[][]{{0,0},{1,1},{2,2}};
-        playGame(moves,board);
+        int[][] secondPlayerMoves = new int[][]{{0,1},{0,2},{1,0}};
+        playGame(board,moves,secondPlayerMoves);
         Assert.assertTrue(ruleEngine.getState(board).isOver());
         Assert.assertTrue(ruleEngine.getState(board).getWinner().equals("X"));
     }
@@ -69,7 +72,8 @@ public class GamePlayTest {
     public void checkForRevDiagWin(){
         Board board = gameEngine.start("TicTacToe");
         int[][] moves = new int[][]{{0,2},{1,1},{2,0}};
-        playGame(moves,board);
+        int[][] secondPlayerMoves = new int[][]{{0,0},{0,1},{1,0}};
+        playGame(board,moves,secondPlayerMoves);
         Assert.assertTrue(ruleEngine.getState(board).isOver());
         Assert.assertTrue(ruleEngine.getState(board).getWinner().equals("X"));
     }
@@ -78,7 +82,8 @@ public class GamePlayTest {
     public void checkForComputerWin(){
         Board board = gameEngine.start("TicTacToe");
         int[][] moves = new int[][]{{1,0},{1,1},{2,2}};
-        playGame(moves,board);
+        int[][] secondPlayerMoves = new int[][]{{0,0},{0,1},{0,2}};
+        playGame(board,moves,secondPlayerMoves);
         Assert.assertTrue(ruleEngine.getState(board).isOver());
         Assert.assertTrue(ruleEngine.getState(board).getWinner().equals("O"));
     }
