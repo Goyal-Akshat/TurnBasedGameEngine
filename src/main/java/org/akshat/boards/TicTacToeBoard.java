@@ -2,24 +2,21 @@ package org.akshat.boards;
 
 import org.akshat.api.Rule;
 import org.akshat.api.RuleSet;
-import org.akshat.game.Board;
-import org.akshat.game.Cell;
-import org.akshat.game.GameState;
-import org.akshat.game.Move;
+import org.akshat.game.*;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class TicTacToeBoard implements  Board {
+public class TicTacToeBoard implements CellBoard {
     String cells[][] = new String[3][3];
 
     public static RuleSet<TicTacToeBoard> getRules(){
         RuleSet<TicTacToeBoard> rules = new RuleSet<TicTacToeBoard>();
-        rules.add(new Rule<TicTacToeBoard>(board -> outerTraversal((i, j)->board.getSymbol(i,j))));
-        rules.add(new Rule<TicTacToeBoard>(board -> outerTraversal((i,j)->board.getSymbol(j,i))));
-        rules.add(new Rule<TicTacToeBoard>(board -> traverse((i) -> board.getSymbol(i,i))));
-        rules.add(new Rule<TicTacToeBoard>(board -> traverse((i) -> board.getSymbol(i,2-i))));
-        rules.add(new Rule<TicTacToeBoard>(board -> {
+        rules.add(new Rule(board -> outerTraversal((i, j)->board.getSymbol(i,j))));
+        rules.add(new Rule(board -> outerTraversal((i,j)->board.getSymbol(j,i))));
+        rules.add(new Rule(board -> traverse((i) -> board.getSymbol(i,i))));
+        rules.add(new Rule(board -> traverse((i) -> board.getSymbol(i,2-i))));
+        rules.add(new Rule(board -> {
             int countOfFilledCells = 0;
             for(int i = 0; i < 3; i++) {
                 for(int j = 0; j < 3; j++) {

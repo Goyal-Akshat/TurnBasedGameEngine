@@ -17,6 +17,7 @@ public class RuleEngine {
         if(board instanceof TicTacToeBoard){
             GameState gameState = getState(board);
             final String[] players = new String[]{"X","O"};
+            Cell forkCell = null;
             for(int playerSymbol=0;playerSymbol<2;playerSymbol++) {
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
@@ -27,6 +28,7 @@ public class RuleEngine {
                         for (int k = 0; k < 3; k++) {
                             for (int l = 0; l < 3; l++) {
                                 Board b1 = b.copy();
+                                forkCell = new Cell(k,l);
                                 b1.move(new Move(new Cell(k, l), player.flip()));
                                 if (getState(b1).getWinner().equals(player.flip().symbol())) {
                                     canStillWin = true;
@@ -40,6 +42,7 @@ public class RuleEngine {
                                     .isOver(gameState.isOver())
                                     .winner(gameState.getWinner())
                                     .hasFork(true)
+                                    .forkCell(forkCell)
                                     .player(player)
                                     .build();
                         }
@@ -58,7 +61,8 @@ public class RuleEngine {
     public GameState getState(Board board) {
         if(board instanceof TicTacToeBoard) {
             TicTacToeBoard board1 = (TicTacToeBoard) board;
-            for(Rule<TicTacToeBoard> r: (RuleSet<TicTacToeBoard>)ruleMap.get(TicTacToeBoard.class.getName())){
+            RuleSet<?> rules = ruleMap.get(TicTacToeBoard.class.getName());
+            for(Rule r: rules){
                 GameState gameState = r.condition.apply(board1);
                 if(gameState.isOver()){
                     return gameState;
